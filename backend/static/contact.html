@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact WebPulse 360</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .contact-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: calc(100vh - 12rem); /* Adjusted to accommodate header and footer */
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .contact-section h2 {
+            font-size: 2.5rem; /* Consistent with other headings */
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .contact-section p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+        }
+
+        .contact-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-card h3 {
+            font-size: 1.5rem; /* Consistent with other subheadings */
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .contact-card p {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--primary-color); /* Using primary color */
+            color: #ffffff;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .email-btn:hover {
+            background-color: #5c6bc0; /* A slightly lighter shade of the primary color */
+        }
+
+        .footer-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999999;
+        }
+
+        /* Mobile adjustments for contact page */
+        @media (max-width: 768px) {
+            .contact-section {
+                padding: 1rem;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="logo.jpg" class="logo-img">
+                    WebPulse 360
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/templates/index.html">Audit & Security Checker Tool</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="contact-section">
+            <h2>Contact Us</h2>
+            <p>Have questions, feedback, or need support? We'd love to hear from you.</p>
+    
+            <div class="contact-card">
+                <h3>Get in Touch</h3>
+                <p>Have questions, feedback, or need support? Contact us directly via email.</p>
+    
+                <a href="mailto:vinithkharvi2004@gmail.com" class="email-btn">📧 Contact via Email</a>
+    
+                <p class="footer-text">We typically respond within 24 hours</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col brand-info">
+                WebPulse 360
+                <p>Comprehensive website analysis tool for SEO, performance, accessibility, and security audits.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="/templates/index.html">Audit & Security Checker</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 WebPulse 360. All rights reserved.
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

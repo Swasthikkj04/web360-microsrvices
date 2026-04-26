@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About WebPulse 360</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column; /* Use a column layout for the page content */
+            align-items: center;
+            padding-top: 40px;
+            min-height: 100vh; /* Ensure body takes up at least the full viewport height */
+        }
+
+        a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #3f51b5;
+        }
+
+        .container {
+            max-width: 900px;
+            text-align: center;
+            padding: 0 20px;
+            flex-grow: 1; /* Allow container to grow and push footer down */
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #bbb;
+            margin-bottom: 30px;
+        }
+
+        .mission {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+
+        .mission h2 {
+            margin-bottom: 10px;
+            color: #3f51b5;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #3f51b5;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #e0e0e0;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #121212;
+            border-top: 1px solid #333;
+            padding: 3rem 5rem 1rem;
+            width: 100%;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .footer-col {
+            flex: 1;
+        }
+
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-info {
+            flex: 2;
+        }
+
+        .brand-info p {
+            font-size: 1rem;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+            padding-top: 1rem;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 1024px) {
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .brand-info p {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 About WebPulse 360</h1>
+        <p class="subtitle">
+            We're on a mission to make the web faster, more accessible, and better optimized for everyone
+        </p>
+
+        <div class="mission">
+            <h2>Our Mission</h2>
+            <p>
+                To democratize website optimization by providing free, comprehensive analysis tools that help 
+                developers, marketers, and business owners improve their web presence.
+            </p>
+        </div>
+
+        <h2 class="section-title">What We Analyze</h2>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>📈 SEO Analysis</h3>
+                <p>
+                    Comprehensive SEO audits including meta tags, heading structure, technical SEO, and search 
+                    engine optimization recommendations.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Performance Testing</h3>
+                <p>
+                    Core Web Vitals analysis, page speed testing, and performance optimization suggestions 
+                    to improve user experience.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>♿ Accessibility Audit</h3>
+                <p>
+                    WCAG 2.1 compliance checking to ensure your website is accessible to users with disabilities 
+                    and follows best practices.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🔒 Security Assessment</h3>
+                <p>
+                    Security header analysis, HTTPS validation, and vulnerability assessment to protect 
+                    your website and users.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col brand-info">
+                WebPulse 360
+                <p>Comprehensive website analysis tool for SEO, performance, accessibility, and security audits.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="/templates/index.html">Audit & Security Checker</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 WebPulse 360. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WebPulse 360: WebPulse 360 is a comprehensive website analysis tool designed to provide a complete overview of a website's health across several critical areas. It offers in-depth audits on SEO, performance, accessibility, and security, giving users a holistic view of their site's strengths and weaknesses.">
+    <meta name="robots" content="index, follow">
+    <title>WebPulse 360 - Website Audit Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #6200ea;
+            --primary-light: #b388ff;
+            --secondary-color: #00e676;
+            --text-color: #e0e0e0;
+            --bg-color: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --border-color: #2a2a2a;
+            --green: #00e676;
+            --red: #ff1744;
+            --yellow: #ffd600;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --gradient-bg: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            --gradient-accent: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+            --gradient-tab: linear-gradient(145deg, #252525, #1a1a1a);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 6rem;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .logo a {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-img {
+            height: 35px;
+            margin-right: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: rotate(360deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .nav-links li a:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        section {
+            padding: 6rem 6rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 5s ease-in-out infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        p {
+            font-size: 1.2rem;
+            max-width: 900px;
+            margin: 0 auto 2.5rem;
+            color: #b0b0b0;
+            font-weight: 400;
+        }
+
+        .hero {
+            padding-top: 10rem;
+            padding-bottom: 10rem;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(98, 0, 234, 0.1), transparent);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='0.05' fill='%236200ea' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 0h60v60H0zM30 30h30v30H30z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+            animation: slide 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes slide {
+            0% { background-position: 0 0; }
+            100% { background-position: 60px 60px; }
+        }
+
+        .input-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: 2.5rem auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 12px 40px var(--shadow);
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 50px var(--shadow);
+        }
+
+        .input-container label {
+            display: block;
+            text-align: left;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: #252525;
+            color: var(--text-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-container input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 8px rgba(98, 0, 234, 0.5);
+        }
+
+        .input-container input::placeholder {
+            color: #777;
+            font-weight: 400;
+        }
+
+        .example-text {
+            font-size: 0.95rem;
+            color: #888;
+            text-align: left;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .mode-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 1rem;
+            background: #252525;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .mode-btn:hover {
+            background: var(--gradient-accent);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        .mode-btn.active {
+            background: var(--gradient-accent);
+            border-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(98, 0, 234, 0.5);
+        }
+
+        .mode-btn .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: currentColor;
+            transition: fill 0.3s ease;
+        }
+
+        .loading-spinner {
+            border: 10px solid #333;
+            border-top: 10px solid var(--primary-color);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            margin: 4rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .audit-btn, .test-again-btn {
+            width: 100%;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--gradient-accent);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(98, 0, 234, 0.4);
+        }
+
+        .audit-btn:hover:not(:disabled), .test-again-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(98, 0, 234, 0.6);
+        }
+
+        .audit-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .test-again-btn {
+            width: auto;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .download-btn {
+            background: #252525;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .download-btn:hover {
+            background: var(--gradient-accent);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .audit-info {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .audit-info p {
+            margin: 0.5rem 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-message {
+            color: var(--red);
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .results-container {
+            margin-top: 4rem;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 12px 40px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .results-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            background: var(--gradient-tab);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .report-url-section {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .report-url-section h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-color);
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .report-url-section p {
+            font-size: 0.95rem;
+            color: #888;
+            margin: 0.5rem 0 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .report-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .summary-card {
+            background: var(--gradient-tab);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px var(--shadow);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .summary-card h3 {
+            font-size: 1.3rem;
+            margin: 0 0 1rem;
+            font-weight: 600;
+            color: #aaa;
+        }
+
+        .grade-badge {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grade-badge.Aplus, .grade-badge.A, .grade-badge.B { color: var(--green); }
+        .grade-badge.C, .grade-badge.D { color: var(--yellow); }
+        .grade-badge.F, .grade-badge.E { color: var(--red); }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .issue-badge {
+            background: var(--red);
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin: 0 0.5rem;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .issue-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .issue-badge[style*="var(--yellow)"] { background: var(--yellow) !important; }
+
+        .security-status-badge {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 0.75rem;
+        }
+
+        .security-status-badge.secure { color: var(--green); }
+        .security-status-badge.insecure { color: var(--red); }
+
+        .score-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .score-card-grid .score-card {
+            padding: 2.5rem;
+            background: var(--gradient-tab);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 15px var(--shadow);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .score-card-grid .score-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .score-card-grid .score-card h3 {
+            font-size: 2rem;
+            margin: 0 0 0.75rem;
+            font-weight: 700;
+        }
+
+        .score-card-grid .score-value {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .score-card-grid .score-value.good { color: var(--green); }
+        .score-card-grid .score-value.needs-improvement { color: var(--yellow); }
+        .score-card-grid .score-value.bad { color: var(--red); }
+
+        .score-card-grid .bar-chart {
+            width: 100%;
+            height: 14px;
+            background: #333;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-card-grid .bar-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 8px;
+            transition: width 1.5s ease-in-out;
+            background: var(--gradient-accent);
+        }
+
+        .score-card-grid .bar-fill.good { background: var(--green); }
+        .score-card-grid .bar-fill.needs-improvement { background: var(--yellow); }
+        .score-card-grid .bar-fill.bad { background: var(--red); }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+            gap: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-buttons button {
+            background: none;
+            border: none;
+            color: #888;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-buttons button:hover {
+            color: var(--primary-light);
+        }
+
+        .tab-buttons button.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-light);
+        }
+
+        .tab-buttons button::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient-accent);
+            transition: width 0.3s ease;
+        }
+
+        .tab-buttons button:hover::after {
+            width: 100%;
+        }
+
+        .tab-content {
+            padding: 2rem;
+            background: var(--gradient-tab);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow);
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .detailed-report-card {
+            background: #252525;
+            border-radius: 14px;
+            padding: 2rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 15px var(--shadow);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .detailed-report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .detailed-report-card h4 {
+            font-size: 1.4rem;
+            margin: 0 0 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .detailed-report-card p {
+            margin: 0.75rem 0;
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        .detailed-report-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detailed-report-card ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: #ccc;
+        }
+
+        .detailed-report-card ul li span {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .status-indicator {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .status-indicator.not-found {
+            color: var(--red);
+        }
+
+        .status-indicator.found {
+            color: var(--green);
+        }
+
+        .score-bar-chart {
+            width: 100%;
+            height: 14px;
+            background: #333;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-bar {
+            height: 100%;
+            width: 0;
+            border-radius: 8px;
+            transition: width 1.5s ease-in-out;
+            background: var(--gradient-accent);
+        }
+
+        .score-bar.good { background: var(--green); }
+        .score-bar.needs-improvement { background: var(--yellow); }
+        .score-bar.bad { background: var(--red); }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-top: 1.5rem;
+            display: block;
+        }
+
+        .quick-recommendations {
+            margin-top: 3rem;
+        }
+
+        .quick-recommendations h3 {
+            text-align: left;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recommendation-card {
+            background: #252525;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            text-align: left;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .recommendation-card .badge {
+            width: 90px;
+            text-align: center;
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .recommendation-card .badge.high { background: var(--red); }
+        .recommendation-card .badge.medium { background: var(--yellow); }
+        .recommendation-card .badge.low { background: var(--green); }
+
+        .recommendation-card .content h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .recommendation-card .content p {
+            margin: 0.75rem 0 0;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .issue-item {
+            background: #333;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .issue-item:hover {
+            transform: translateX(5px);
+        }
+
+        .security-overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .security-overview-card {
+            background: #252525;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .security-overview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .security-overview-card h5 {
+            font-size: 1.2rem;
+            margin: 0 0 0.75rem;
+            font-weight: 600;
+            background: var(--gradient-accent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status {
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .status.enabled, .status.valid, .status.present { background: var(--green); color: #fff; }
+        .status.missing, .status.disabled, .status.invalid { background: var(--red); color: #fff; }
+
+        .issue-text {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        footer {
+            background: var(--bg-color);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 6rem 2rem;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .footer-col {
+            flex: 1;
+        }
+
+        .footer-col h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .brand-info {
+            flex: 2;
+        }
+
+        .brand-info p {
+            font-size: 1rem;
+            text-align: left;
+            margin-top: 1.5rem;
+            color: #b0b0b0;
+        }
+
+        .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .navbar, section, footer {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .report-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            .report-url-section {
+                text-align: center;
+            }
+            .input-container {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+            .hero {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
+            }
+            h1 { font-size: 2.8rem; }
+            section { padding: 4rem 1.5rem; }
+            .input-container { padding: 1.5rem; }
+            .mode-buttons { flex-direction: column; }
+            .report-summary-grid, .score-card-grid, .detailed-analysis-grid, .detailed-report-grid, .security-overview-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="logo">
+                <a href="/" aria-label="WebPulse 360 Home">
+                    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="WebPulse 360 Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/35';">
+                    WebPulse 360
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" aria-current="page">Audit & Security Checker Tool</a></li>
+                <li><a href="/static/about.html">About</a></li>
+                <li><a href="/static/contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>WebPulse 360</h1>
+            <p>Analyze your website's SEO, performance, accessibility, and security with comprehensive audits and actionable insights.</p>
+            <div class="input-container">
+                <label for="url-input" class="hidden">Enter Website URL</label>
+                <input type="url" id="url-input" placeholder="e.g., https://example.com" aria-describedby="example-text">
+                <p id="example-text" class="example-text">Try: example.com, mozilla.org, web.dev</p>
+                <div class="mode-buttons" role="radiogroup" aria-label="Select audit mode">
+                    <button class="mode-btn active" data-mode="desktop" role="radio" aria-checked="true" aria-label="Select Desktop Mode">
+                        <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M386.3 160H128V64H386.3c15.7 0 30.7 6.4 41.8 17.7L469.7 112c2.2 2.2 3.8 4.7 4.9 7.4c.1 .2 .2 .4 .3 .5c.1 .3 .2 .6 .3 .8c.2 .5 .3 1.1 .5 1.6c.1 .5 .2 1.1 .3 1.6c.2 .7 .3 1.4 .4 2.1c.2 1.5 .3 3 .3 4.6c0 1.6-.1 3.1-.3 4.6c-.1 .7-.2 1.4-.4 2.1c-.1 .5-.2 1.1-.3 1.6c-.1 .5-.2 1.1-.5 1.6c-.1 .3-.2 .6-.3 .8c-.1 .2-.2 .4-.3 .5c-1.1 2.7-2.7 5.2-4.9 7.4L428.1 144.3c-11.1 11.3-26.1 17.7-41.8 17.7zM96 64c-17.7 0-32 14.3-32 32V352c0 17.7 14.3 32 32 32H288v32H224c-17.7 0-32 14.3-32 32s14.3 32 32 32h96 64c17.7 0 32-14.3 32-32s-14.3-32-32-32H320V384H544c17.7 0 32-14.3 32-32V96c0-17.7-14.3-32-32-32H480V256H96V64zm384 0h32c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32H512V64z"/></svg>
+                        Desktop
+                    </button>
+                    <button class="mode-btn" data-mode="mobile" role="radio" aria-checked="false" aria-label="Select Mobile Mode">
+                        <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M80 0C35.8 0 0 35.8 0 80V432c0 44.2 35.8 80 80 80H304c44.2 0 80-35.8 80-80V80c0-44.2-35.8-80-80-80H80zM64 80c0-8.8 7.2-16 16-16H304c8.8 0 16 7.2 16 16V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V80zM192 416a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+                        Mobile
+                    </button>
+                </div>
+                <button id="audit-btn" class="audit-btn" aria-label="Start Website Audit">Start Audit</button>
+                <div class="audit-info">
+                    <p id="mode-info">Mode: desktop</p>
+                    <p>Data is not stored - results will be lost on page refresh</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="loading-spinner" class="loading-spinner hidden" aria-live="polite" aria-label="Loading audit results"></div>
+        <div id="error-message" class="error-message hidden" role="alert"></div>
+
+        <section id="results-section" class="results-container hidden" role="region" aria-label="Audit Results">
+            <div class="report-header">
+                <div class="report-url-section">
+                    <h3><a id="report-url" href="#" target="_blank" rel="noopener noreferrer">Website URL</a></h3>
+                    <p id="report-datetime" aria-label="Audit timestamp"></p>
+                </div>
+                <div class="header-buttons">
+                    <button id="download-btn" class="download-btn" aria-label="Download Audit Report as PDF">Download Report</button>
+                    <button class="test-again-btn" aria-label="Run Another Audit">Test Again</button>
+                </div>
+            </div>
+            
+            <div class="report-summary-grid">
+                <div class="summary-card">
+                    <h3>Overall Grade</h3>
+                    <div class="grade-badge" id="overall-grade-badge" aria-label="Overall website grade">F</div>
+                    <div class="score-value" id="overall-score-summary" aria-label="Overall score">57</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Performance</h3>
+                    <div id="performance-summary">
+                        <p id="fcp-value" aria-label="First Contentful Paint">FCP: 4823ms</p>
+                        <p id="lcp-value" aria-label="Largest Contentful Paint">LCP: 5357ms</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <h3>Issues Found</h3>
+                    <div id="issues-summary">
+                        <span class="issue-badge" style="background-color: var(--red);" id="critical-issues-count" aria-label="Critical issues">2 Critical</span>
+                        <span class="issue-badge" style="background-color: var(--yellow);" id="minor-issues-count" aria-label="Minor issues">2 Minor</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <h3>Security Status</h3>
+                    <div id="security-summary">
+                        <span class="security-status-badge" id="security-status-badge" aria-label="Security status">HTTPS</span>
+                        <p id="security-issues-count" aria-label="Number of security issues">No security issues detected</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="score-card-grid">
+                <div class="score-card">
+                    <h3>Performance</h3>
+                    <div class="score-value" id="performance-score-value" aria-label="Performance score">10</div>
+                    <div class="bar-chart">
+                        <div class="bar-fill bad" id="performance-score-bar" aria-hidden="true" style="width: 10%;"></div>
+                    </div>
+                </div>
+                <div class="score-card">
+                    <h3>SEO</h3>
+                    <div class="score-value" id="seo-score-value" aria-label="SEO score">75</div>
+                    <div class="bar-chart">
+                        <div class="bar-fill needs-improvement" id="seo-score-bar" aria-hidden="true" style="width: 75%;"></div>
+                    </div>
+                </div>
+                <div class="score-card">
+                    <h3>Accessibility</h3>
+                    <div class="score-value" id="accessibility-score-value" aria-label="Accessibility score">87</div>
+                    <div class="bar-chart">
+                        <div class="bar-fill good" id="accessibility-score-bar" aria-hidden="true" style="width: 87%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-buttons" role="tablist" aria-label="Audit report tabs">
+                <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview-tab">Overview</button>
+                <button class="tab-btn" data-tab="seo" role="tab" aria-selected="false" aria-controls="seo-tab">SEO</button>
+                <button class="tab-btn" data-tab="performance" role="tab" aria-selected="false" aria-controls="performance-tab">Performance</button>
+                <button class="tab-btn" data-tab="accessibility" role="tab" aria-selected="false" aria-controls="accessibility-tab">Accessibility</button>
+                <button class="tab-btn" data-tab="security" role="tab" aria-selected="false" aria-controls="security-tab">Security</button>
+            </div>
+
+            <div id="overview-tab" class="tab-content" role="tabpanel" aria-labelledby="overview-tab">
+                <div class="detailed-report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="detailed-report-card">
+                        <h4>Overall Score</h4>
+                        <p>Comprehensive website performance overview</p>
+                        <div class="score-bar-chart">
+                            <div class="score-bar bad" id="overall-score-bar" aria-hidden="true" style="width: 57%;"></div>
+                            <span class="score-number" id="overall-score-text" aria-label="Overall score and issues found">57 <small>4 issues found</small></span>
+                        </div>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Technical Details</h4>
+                        <p>Key technical insights for your website</p>
+                        <div style="text-align: left;">
+                            <p><strong>Protocol</strong></p>
+                            <span class="status enabled" id="protocol-status" aria-label="Protocol status">HTTPS</span>
+                            <span id="protocol-text" aria-label="Protocol description">secure connection</span>
+                        </div>
+                        <div style="text-align: left; margin-top: 1.5rem;">
+                            <p><strong>Content Analysis</strong></p>
+                            <p><span id="headings-found" aria-label="Number of headings">3</span> headings found</p>
+                            <p><span id="og-tags-found" aria-label="Number of Open Graph tags">6</span> Open Graph tags</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detailed-report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <div class="detailed-report-card">
+                        <h4>Key Metrics</h4>
+                        <p>Summary of critical performance indicators</p>
+                        <ul>
+                            <li><p>Largest Contentful Paint <span><span id="lcp-value-overview" aria-label="Largest Contentful Paint value">5.357</span>s</span></p></li>
+                            <li><p>First Contentful Paint <span><span id="fcp-value-overview" aria-label="First Contentful Paint value">4.823</span>s</span></p></li>
+                            <li><p>Cumulative Layout Shift <span><span id="cls-value-overview" aria-label="Cumulative Layout Shift value">0.020</span></span></p></li>
+                        </ul>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Analysis Method</h4>
+                        <p>How our audit process works</p>
+                        <p>This audit uses lightweight HTTP requests and HTML parsing for fast, reliable results. For deeper insights, consider tools like Google PageSpeed Insights.</p>
+                    </div>
+                </div>
+
+                <div class="quick-recommendations">
+                    <h3>Quick Recommendations</h3>
+                    <p>Actionable steps to optimize your website</p>
+                    <div id="recommendations-list" aria-label="List of recommendations"></div>
+                </div>
+            </div>
+
+            <div id="seo-tab" class="tab-content hidden" role="tabpanel" aria-labelledby="seo-tab">
+                <div class="detailed-report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="detailed-report-card">
+                        <h4>SEO Analysis</h4>
+                        <p>Detailed insights into your site's search engine optimization</p>
+                        <div style="text-align: left;">
+                            <p><strong>Title</strong></p>
+                            <p><span id="seo-title-status" aria-label="SEO title status">YouTube</span></p>
+                        </div>
+                        <div style="text-align: left; margin-top: 1.5rem;">
+                            <p><strong>Description</strong></p>
+                            <p><span id="seo-description-status" aria-label="Meta description status">Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.</span></p>
+                        </div>
+                        <div style="text-align: left; margin-top: 1.5rem;">
+                            <p><strong>Canonical URL</strong></p>
+                            <p><span id="seo-canonical-status" aria-label="Canonical URL status">https://www.youtube.com/</span></p>
+                        </div>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Heading Structure</h4>
+                        <p>Analysis of H1-H6 tags on your page</p>
+                        <p><span id="seo-h1-status" aria-label="Heading structure status">No headings found</span></p>
+                    </div>
+                </div>
+                <div class="detailed-report-grid" style="margin-top: 2rem;">
+                    <div class="detailed-report-card">
+                        <h4>Technical SEO</h4>
+                        <p>Key SEO configurations and files</p>
+                        <div class="detailed-report-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                            <div class="detailed-report-card">
+                                <h5>robots.txt</h5>
+                                <p><span id="robots-status" aria-label="robots.txt status">Found</span></p>
+                            </div>
+                            <div class="detailed-report-card">
+                                <h5>sitemap.xml</h5>
+                                <p><span id="sitemap-status" aria-label="sitemap.xml status">Not Found</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="performance-tab" class="tab-content hidden" role="tabpanel" aria-labelledby="performance-tab">
+                <div class="detailed-report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="detailed-report-card">
+                        <h4>Performance Score</h4>
+                        <p>Overall website speed and responsiveness</p>
+                        <p style="font-size: 2.5rem; font-weight: 800;"><span id="performance-tab-score" aria-label="Performance score">10</span> <span id="performance-grade" aria-label="Performance grade">F</span></p>
+                        <div class="score-bar-chart">
+                            <div class="score-bar bad" id="performance-tab-bar" aria-hidden="true" style="width: 10%;"></div>
+                        </div>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Core Web Vitals</h4>
+                        <p>Essential metrics for user experience</p>
+                        <ul>
+                            <li>Largest Contentful Paint <span><span id="lcp-tab-value" aria-label="Largest Contentful Paint value">5.357</span>s</span></li>
+                            <li>First Contentful Paint <span><span id="fcp-tab-value" aria-label="First Contentful Paint value">4.823</span>s</span></li>
+                            <li>Cumulative Layout Shift <span><span id="cls-tab-value" aria-label="Cumulative Layout Shift value">0.020</span></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="quick-recommendations">
+                    <h3>Performance Recommendations</h3>
+                    <p>Ways to improve site speed and performance</p>
+                    <div id="performance-recommendations-list" aria-label="Performance recommendations"></div>
+                </div>
+            </div>
+
+            <div id="accessibility-tab" class="tab-content hidden" role="tabpanel" aria-labelledby="accessibility-tab">
+                <div class="detailed-report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="detailed-report-card">
+                        <h4>Accessibility Score</h4>
+                        <p>Evaluation of website accessibility for all users</p>
+                        <p style="font-size: 2.5rem; font-weight: 800;"><span id="accessibility-tab-score" aria-label="Accessibility score">87</span> <span id="accessibility-grade" aria-label="Accessibility grade">A</span></p>
+                        <div class="score-bar-chart">
+                            <div class="score-bar good" id="accessibility-tab-bar" aria-hidden="true" style="width: 87%;"></div>
+                        </div>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Accessibility Impact</h4>
+                        <p>How accessibility issues affect users</p>
+                        <p style="font-weight: 700;">Screen Readers</p>
+                        <p>May experience challenges navigating content.</p>
+                    </div>
+                </div>
+                <div class="detailed-report-card">
+                    <h4>Detailed Issues (<span id="accessibility-issues-count" aria-label="Number of accessibility issues">2</span> issues found)</h4>
+                    <p>Specific accessibility improvements needed</p>
+                    <ul id="accessibility-issues-list" aria-label="List of accessibility issues"></ul>
+                </div>
+            </div>
+
+            <div id="security-tab" class="tab-content hidden" role="tabpanel" aria-labelledby="security-tab">
+                <div class="security-report">
+                    <div class="phishing-assessment">
+                        <h4>Phishing Risk Assessment <span class="badge low" id="phishing-risk-badge" aria-label="Phishing risk level">LOW</span></h4>
+                        <p id="phishing-status-text" aria-label="Phishing risk description">No phishing indicators detected</p>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Security Overview - <a href="#" id="security-overview-url" target="_blank" rel="noopener noreferrer" aria-label="Website URL">Website URL</a></h4>
+                        <p>Key security configurations</p>
+                        <div class="security-overview-grid">
+                            <div class="security-overview-card">
+                                <h5>HTTPS Encryption</h5>
+                                <span class="status enabled" id="https-status" aria-label="HTTPS status">Enabled</span>
+                            </div>
+                            <div class="security-overview-card">
+                                <h5>SSL Certificate</h5>
+                                <span class="status valid" id="ssl-status" aria-label="SSL certificate status">Valid</span>
+                                <p style="margin-top: 1.5rem;">Issuer: <span id="ssl-issuer" aria-label="SSL issuer">Let's Encrypt</span></p>
+                                <p>Expires: <span id="ssl-expires" aria-label="SSL expiration date">2026-08-22</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detailed-report-card">
+                        <h4>Security Headers</h4>
+                        <p>HTTP headers for enhanced security</p>
+                        <div class="security-overview-grid">
+                            <div class="security-overview-card">
+                                <h5>Strict-Transport-Security</h5>
+                                <span class="status present" id="sts-status" aria-label="Strict-Transport-Security status">Present</span>
+                            </div>
+                            <div class="security-overview-card">
+                                <h5>X-Frame-Options</h5>
+                                <span class="status present" id="xfo-status" aria-label="X-Frame-Options status">Present</span>
+                            </div>
+                            <div class="security-overview-card">
+                                <h5>X-Content-Type-Options</h5>
+                                <span class="status present" id="xcto-status" aria-label="X-Content-Type-Options status">Present</span>
+                            </div>
+                            <div class="security-overview-card">
+                                <h5>X-XSS-Protection</h5>
+                                <span class="status present" id="xxssp-status" aria-label="X-XSS-Protection status">Present</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="security-issues-list">
+                        <h4>Security Issues (<span id="security-issues-list-count" aria-label="Number of security issues">0</span>)</h4>
+                        <p>Specific security concerns to address</p>
+                        <ul id="security-issues-list" aria-label="List of security issues"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="footer-container">
+            <div class="footer-col brand-info">
+                <h4>WebPulse 360</h4>
+                <p>Comprehensive website analysis tool for SEO, performance, accessibility, and security audits.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="/">Audit & Security Checker</a></li>
+                    <li><a href="/static/about.html">About</a></li>
+                    <li><a href="/static/contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="/static/about.html">About Us</a></li>
+                    <li><a href="/static/contact.html">Contact</a></li>
+                    <li><a href="/static/privacy.html">Privacy Policy</a></li>
+                    <li><a href="/static/terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 WebPulse 360. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            const modeInfo = document.getElementById('mode-info');
+            const urlInput = document.getElementById('url-input');
+            const auditBtn = document.getElementById('audit-btn');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const resultsSection = document.getElementById('results-section');
+            const errorMessage = document.getElementById('error-message');
+            const testAgainBtn = document.querySelector('.test-again-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const issuesSummaryContainer = document.querySelector('.summary-card #issues-summary');
+
+            let selectedMode = 'desktop';
+
+            const isValidUrl = (url) => {
+                try {
+                    new URL(url.startsWith('http') ? url : `https://${url}`);
+                    return true;
+                } catch {
+                    return false;
+                }
+            };
+
+            const getScoreColorClass = (score) => {
+                if (score >= 80) return 'good';
+                if (score >= 50) return 'needs-improvement';
+                return 'bad';
+            };
+
+            const getGradeClass = (score) => {
+                if (score >= 90) return 'A+';
+                if (score >= 80) return 'A';
+                if (score >= 70) return 'B';
+                if (score >= 60) return 'C';
+                if (score >= 50) return 'D';
+                return 'F';
+            };
+
+            const createRecommendationCard = (title, description, severity) => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                let badgeClass = '';
+                if (severity.toLowerCase() === 'critical') {
+                    badgeClass = 'high';
+                } else if (severity.toLowerCase() === 'minor') {
+                    badgeClass = 'medium';
+                } else {
+                    badgeClass = 'low';
+                }
+                card.innerHTML = `
+                    <div class="badge ${badgeClass}">${severity}</div>
+                    <div class="content">
+                        <h4>${title}</h4>
+                        <p>${description}</p>
+                    </div>
+                `;
+                return card;
+            };
+
+            const populateList = (issues, listElementId) => {
+                const list = document.getElementById(listElementId);
+                if (!list) return;
+                list.innerHTML = '';
+                if (!issues || issues.length === 0) {
+                    const li = document.createElement('li');
+                    li.textContent = 'No issues found in this category.';
+                    list.appendChild(li);
+                } else {
+                    issues.forEach(issue => {
+                        const li = document.createElement('li');
+                        li.className = 'issue-item';
+                        li.textContent = issue;
+                        list.appendChild(li);
+                    });
+                }
+            };
+
+            const fetchAudit = async (url) => {
+                if (!isValidUrl(url)) {
+                    throw new Error('Invalid URL format. Please enter a valid URL (e.g., https://example.com).');
+                }
+                try {
+                    const response = await fetch('/audit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: url.startsWith('http') ? url : `https://${url}` }),
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    throw new Error(`Failed to fetch audit data: ${error.message}`);
+                }
+            };
+
+            modeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    modeButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-checked', 'false');
+                    });
+                    button.classList.add('active');
+                    button.setAttribute('aria-checked', 'true');
+                    selectedMode = button.getAttribute('data-mode');
+                    modeInfo.textContent = `Mode: ${selectedMode}`;
+                });
+            });
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    const tabId = button.getAttribute('data-tab');
+                    tabContents.forEach(content => {
+                        content.classList.toggle('hidden', content.id !== `${tabId}-tab`);
+                    });
+                });
+            });
+
+            auditBtn.addEventListener('click', async () => {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    errorMessage.textContent = "Please enter a URL to audit.";
+                    errorMessage.classList.remove('hidden');
+                    return;
+                }
+
+                if (!isValidUrl(url)) {
+                    errorMessage.textContent = "Invalid URL format. Please enter a valid URL (e.g., https://example.com).";
+                    errorMessage.classList.remove('hidden');
+                    return;
+                }
+
+                errorMessage.classList.add('hidden');
+                loadingSpinner.classList.remove('hidden');
+                resultsSection.classList.add('hidden');
+                auditBtn.disabled = true;
+                const inputContainer = document.querySelector('.input-container');
+                if (inputContainer) inputContainer.style.display = 'none';
+
+                try {
+                    const result = await fetchAudit(url);
+
+                    loadingSpinner.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+
+                    const reportUrl = document.getElementById('report-url');
+                    if (reportUrl) {
+                        reportUrl.textContent = result.url;
+                        reportUrl.href = result.url;
+                    }
+
+                    document.getElementById('report-datetime').textContent = new Date(result.timestamp).toLocaleString();
+                    document.getElementById('overall-score-summary').textContent = result.overall.score;
+                    document.getElementById('overall-grade-badge').textContent = result.overall.grade;
+                    document.getElementById('overall-grade-badge').className = `grade-badge ${result.overall.grade.replace('+', 'plus').replace(' ', '')}`;
+
+                    const performanceMetrics = result.performance.metrics || {};
+                    document.getElementById('fcp-value').textContent = `FCP: ${performanceMetrics.fcp || '--'}ms`;
+                    document.getElementById('lcp-value').textContent = `LCP: ${performanceMetrics.lcp || '--'}ms`;
+
+                    const issuesCount = result.issues_count || {};
+                    document.getElementById('critical-issues-count').textContent = `${issuesCount.critical || 0} Critical`;
+                    document.getElementById('minor-issues-count').textContent = `${issuesCount.minor || 0} Minor`;
+
+                    const security = result.security || {};
+                    document.getElementById('security-status-badge').textContent = security.ssl_valid ? 'HTTPS' : 'HTTP';
+                    document.getElementById('security-status-badge').className = `security-status-badge ${security.ssl_valid ? 'secure' : 'insecure'}`;
+                    document.getElementById('security-issues-count').textContent = `${(security.issues || []).length} security issues found`;
+
+                    const performanceScore = result.performance.score || 0;
+                    document.getElementById('performance-score-value').textContent = performanceScore;
+                    document.getElementById('performance-score-bar').style.width = `${performanceScore}%`;
+                    document.getElementById('performance-score-bar').className = `bar-fill ${getScoreColorClass(performanceScore)}`;
+
+                    const seoScore = result.seo.score || 0;
+                    document.getElementById('seo-score-value').textContent = seoScore;
+                    document.getElementById('seo-score-bar').style.width = `${seoScore}%`;
+                    document.getElementById('seo-score-bar').className = `bar-fill ${getScoreColorClass(seoScore)}`;
+
+                    const accessibilityScore = Number(result.accessibility.score || 0).toFixed(3);
+                    document.getElementById('accessibility-score-value').textContent = accessibilityScore;
+                    document.getElementById('accessibility-score-bar').style.width = `${accessibilityScore}%`;
+                    document.getElementById('accessibility-score-bar').className = `bar-fill ${getScoreColorClass(accessibilityScore)}`;
+
+                    const overallScore = result.overall.score;
+                    document.getElementById('overall-score-bar').style.width = `${overallScore}%`;
+                    document.getElementById('overall-score-bar').className = `score-bar ${getScoreColorClass(overallScore)}`;
+                    document.getElementById('overall-score-text').innerHTML = `${overallScore} <small>${(issuesCount.critical || 0) + (issuesCount.minor || 0)} issues found</small>`;
+
+                    document.getElementById('protocol-status').textContent = security.ssl_valid ? 'HTTPS' : 'HTTP';
+                    document.getElementById('protocol-status').className = `issue-badge ${security.ssl_valid ? 'green' : 'red'}`;
+                    document.getElementById('protocol-text').textContent = security.ssl_valid ? 'secure connection' : 'insecure connection';
+
+                    const seoData = result.seo || {};
+                    document.getElementById('headings-found').textContent = seoData.h1_count || 0;
+                    document.getElementById('og-tags-found').textContent = Object.keys(seoData.og_tags || {}).length;
+                    document.getElementById('lcp-value-overview').textContent = performanceMetrics.lcp || '--';
+                    document.getElementById('fcp-value-overview').textContent = performanceMetrics.fcp || '--';
+                    document.getElementById('cls-value-overview').textContent = performanceMetrics.cls || '--';
+
+                    const allIssues = [
+                        ...(security.issues || []).map(i => ({ text: i, category: 'Security' })),
+                        ...(result.performance.issues || []).map(i => ({ text: i, category: 'Performance' })),
+                        ...(seoData.issues || []).map(i => ({ text: i, category: 'SEO' })),
+                        ...(result.accessibility.issues || []).map(i => ({ text: i, category: 'Accessibility' })),
+                    ];
+                    const recommendationsList = document.getElementById('recommendations-list');
+                    if (recommendationsList) {
+                        recommendationsList.innerHTML = '';
+                        if (allIssues.length > 0) {
+                            allIssues.forEach(issue => {
+                                const severity = (issue.text.includes('Missing') || issue.text.includes('Invalid') || issue.text.includes('High')) ? 'Critical' : 'Minor';
+                                const card = createRecommendationCard(`${issue.category} Issue`, issue.text, severity);
+                                recommendationsList.appendChild(card);
+                            });
+                        } else {
+                            const noIssuesMsg = document.createElement('p');
+                            noIssuesMsg.textContent = "Great! No major issues were found in the audit.";
+                            recommendationsList.appendChild(noIssuesMsg);
+                        }
+                    }
+
+                    document.getElementById('seo-title-status').textContent = seoData.title || 'Not found';
+                    document.getElementById('seo-description-status').textContent = seoData.meta_description || 'Not found';
+                    document.getElementById('seo-canonical-status').textContent = seoData.canonical_url || 'Not found';
+                    document.getElementById('seo-h1-status').textContent = seoData.h1_count ? `${seoData.h1_count} headings found` : 'No headings found';
+                    document.getElementById('robots-status').textContent = seoData.robots_txt_status || 'Not found';
+                    document.getElementById('sitemap-status').textContent = seoData.sitemap_xml_status || 'Not found';
+
+                    const performance = result.performance || {};
+                    document.getElementById('performance-tab-score').textContent = performance.score || 0;
+                    document.getElementById('performance-grade').textContent = getGradeClass(performance.score || 0);
+                    document.getElementById('performance-tab-bar').style.width = `${performance.score || 0}%`;
+                    document.getElementById('performance-tab-bar').className = `score-bar ${getScoreColorClass(performance.score || 0)}`;
+                    document.getElementById('lcp-tab-value').textContent = performanceMetrics.lcp || '--';
+                    document.getElementById('fcp-tab-value').textContent = performanceMetrics.fcp || '--';
+                    document.getElementById('cls-tab-value').textContent = performanceMetrics.cls || '--';
+                    populateList(performance.issues, 'performance-recommendations-list');
+
+                    const accessibility = result.accessibility || {};
+                    document.getElementById('accessibility-tab-score').textContent = Number(accessibility.score || 0).toFixed(3);
+                    document.getElementById('accessibility-grade').textContent = getGradeClass(accessibility.score || 0);
+                    document.getElementById('accessibility-tab-bar').style.width = `${accessibility.score || 0}%`;
+                    document.getElementById('accessibility-tab-bar').className = `score-bar ${getScoreColorClass(accessibility.score || 0)}`;
+                    document.getElementById('accessibility-issues-count').textContent = (accessibility.issues || []).length;
+                    populateList(accessibility.issues, 'accessibility-issues-list');
+
+                    document.getElementById('phishing-risk-badge').textContent = security.phishing_risk || 'UNKNOWN';
+                    document.getElementById('phishing-risk-badge').className = `badge ${security.phishing_risk && security.phishing_risk.includes('LOW') ? 'low' : 'high'}`;
+                    document.getElementById('phishing-status-text').textContent = security.phishing_risk && security.phishing_risk.includes('LOW') ? 'No phishing indicators detected' : 'Phishing indicators found';
+
+                    const securityOverviewUrl = document.getElementById('security-overview-url');
+                    if (securityOverviewUrl) {
+                        securityOverviewUrl.textContent = result.url;
+                        securityOverviewUrl.href = result.url;
+                    }
+                    document.getElementById('https-status').textContent = security.ssl_valid ? 'Enabled' : 'Disabled';
+                    document.getElementById('https-status').className = `status ${security.ssl_valid ? 'enabled' : 'disabled'}`;
+                    document.getElementById('ssl-status').textContent = security.ssl_error === 'Valid' ? 'Valid' : 'Invalid';
+                    document.getElementById('ssl-status').className = `status ${security.ssl_error === 'Valid' ? 'valid' : 'invalid'}`;
+                    document.getElementById('ssl-issuer').textContent = security.ssl_issuer || 'N/A';
+                    document.getElementById('ssl-expires').textContent = security.ssl_expires || 'N/A';
+                    document.getElementById('sts-status').textContent = security.security_headers['Strict-Transport-Security'] ? 'Present' : 'Missing';
+                    document.getElementById('sts-status').className = `status ${security.security_headers['Strict-Transport-Security'] ? 'present' : 'missing'}`;
+                    document.getElementById('xfo-status').textContent = security.security_headers['X-Frame-Options'] ? 'Present' : 'Missing';
+                    document.getElementById('xfo-status').className = `status ${security.security_headers['X-Frame-Options'] ? 'present' : 'missing'}`;
+                    document.getElementById('xcto-status').textContent = security.security_headers['X-Content-Type-Options'] ? 'Present' : 'Missing';
+                    document.getElementById('xcto-status').className = `status ${security.security_headers['X-Content-Type-Options'] ? 'present' : 'missing'}`;
+                    document.getElementById('xxssp-status').textContent = security.security_headers['X-XSS-Protection'] ? 'Present' : 'Missing';
+                    document.getElementById('xxssp-status').className = `status ${security.security_headers['X-XSS-Protection'] ? 'present' : 'missing'}`;
+                    populateList(security.issues, 'security-issues-list');
+                    document.getElementById('security-issues-list-count').textContent = (security.issues || []).length;
+
+                } catch (error) {
+                    errorMessage.textContent = `An error occurred: ${error.message}`;
+                    errorMessage.classList.remove('hidden');
+                    loadingSpinner.classList.add('hidden');
+                    const inputContainer = document.querySelector('.input-container');
+                    if (inputContainer) inputContainer.style.display = 'block';
+                } finally {
+                    auditBtn.disabled = false;
+                }
+            });
+
+            testAgainBtn.addEventListener('click', () => {
+                resultsSection.classList.add('hidden');
+                auditBtn.disabled = false;
+                urlInput.value = '';
+                errorMessage.classList.add('hidden');
+                const inputContainer = document.querySelector('.input-container');
+                if (inputContainer) inputContainer.style.display = 'block';
+            });
+
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', async () => {
+                    const resultsElement = document.getElementById('results-section');
+                    if (!resultsElement) return;
+
+                    try {
+                        resultsElement.scrollIntoView({ behavior: 'auto' });
+                        const canvas = await html2canvas(resultsElement, {
+                            scale: 2,
+                            useCORS: true,
+                            scrollX: 0,
+                            scrollY: -window.scrollY
+                        });
+                        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF('p', 'mm', 'a4');
+
+                        const imgProps = doc.getImageProperties(imgData);
+                        const pdfWidth = doc.internal.pageSize.getWidth();
+                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                        doc.setFontSize(12);
+                        doc.text('WebPulse 360 Audit Report', 10, 10);
+                        doc.text(`URL: ${document.getElementById('report-url').textContent}`, 10, 20);
+                        doc.text(`Date: ${new Date().toLocaleString()}`, 10, 30);
+
+                        doc.addImage(imgData, 'JPEG', 0, 40, pdfWidth, pdfHeight);
+
+                        const urlText = document.getElementById('report-url').textContent;
+                        const filename = `WebPulse360_Report_${urlText.replace(/[^a-z0-9]/gi, '_').substring(0, 30)}.pdf`;
+                        doc.save(filename);
+                    } catch (error) {
+                        errorMessage.textContent = 'Failed to generate PDF. Please try again.';
+                        errorMessage.classList.remove('hidden');
+                    }
+                });
+            }
+
+            if (issuesSummaryContainer) {
+                issuesSummaryContainer.addEventListener('click', () => {
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    const overviewButton = document.querySelector('[data-tab="overview"]');
+                    if (overviewButton) {
+                        overviewButton.classList.add('active');
+                        overviewButton.setAttribute('aria-selected', 'true');
+                    }
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    const overviewTab = document.getElementById('overview-tab');
+                    if (overviewTab) overviewTab.classList.remove('hidden');
+                    const issuesSection = document.querySelector('.quick-recommendations');
+                    if (issuesSection) issuesSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
