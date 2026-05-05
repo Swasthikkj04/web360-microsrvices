@@ -19,15 +19,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Backend
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:v2 $GITHUB_WORKSPACE/backend
+       - name: Build Backend
+         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:v2 ${{ github.workspace }}/backend
   
 
       - name: Push Backend
         run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:v2
 
       - name: Build Analyzer
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/analyzer:v2 $GITHUB_WORKSPACE/analyzer      
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/analyzer:v2 ${{ github.workspace }}/analyzer      
 
       - name: Push Analyzer
         run: docker push ${{ secrets.DOCKER_USERNAME }}/analyzer:v2
