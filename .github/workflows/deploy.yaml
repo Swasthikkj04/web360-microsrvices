@@ -1,10 +1,3 @@
-name: WebPulse360 CI
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,8 +5,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # 🔍 DEBUG (keep this for now)
       - name: Debug workspace
         run: |
           pwd
@@ -26,17 +20,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Backend
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:v2 ./backend
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:v2 ./backend
 
       - name: Push Backend
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend:v2
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:v2
 
       - name: Build Analyzer
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/analyzer:v2 ./analyzer
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/analyzer:v2 ./analyzer
 
       - name: Push Analyzer
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/analyzer:v2
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/analyzer:v2
